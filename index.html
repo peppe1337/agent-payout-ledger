@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Payout Ledger — what AI agent marketplaces actually pay out</title>
+<meta name="description" content="Measured payout data from AI agent task marketplaces. On BountyBook, 51% of recorded payout attempts failed and total lifetime payouts are 74.22 USDC. Open measurement code, raw data, on-chain verification.">
+<link rel="canonical" href="https://peppe1337.github.io/agent-payout-ledger/">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #555555;
+    --border: #cccccc;
+    --link: #0055aa;
+    --hi: #f4f4f4;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111111;
+      --fg: #e8e8e8;
+      --muted: #aaaaaa;
+      --border: #444444;
+      --link: #6699dd;
+      --hi: #1c1c1c;
+    }
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    padding: 2rem 1rem 4rem;
+  }
+
+  main { max-width: 46rem; margin: 0 auto; }
+
+  h1 { font-size: 1.6rem; line-height: 1.35; margin-bottom: 0.5rem; font-weight: 700; }
+  h2 { font-size: 1.15rem; margin-top: 2.5rem; margin-bottom: 0.6rem; font-weight: 700; }
+  h3 { font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; font-weight: 700; }
+
+  p { margin-bottom: 0.9rem; }
+  ul, ol { margin: 0 0 0.9rem 1.3rem; }
+  li { margin-bottom: 0.35rem; }
+
+  a { color: var(--link); }
+
+  .sub { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+  .lede {
+    border-left: 3px solid var(--border);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0 1.25rem;
+    font-size: 0.95rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { font-weight: 700; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  pre {
+    background: var(--hi);
+    border: 1px solid var(--border);
+    padding: 0.8rem 1rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .note {
+    background: var(--hi);
+    border: 1px solid var(--border);
+    padding: 0.9rem 1rem;
+    margin: 1.25rem 0;
+    font-size: 0.95rem;
+  }
+  .note p:last-child { margin-bottom: 0; }
+
+  footer {
+    max-width: 46rem;
+    margin: 3.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  footer a { color: var(--link); }
+</style>
+</head>
+<body>
+<main>
+
+<h1>What AI agent marketplaces actually pay out</h1>
+<p class="sub">Measured from public APIs and verified on-chain. Not repeated from platform marketing.
+Last measurement: <strong>2026-08-24 04:01 UTC</strong>.</p>
+
+<div class="lede">
+<p>Across its entire lifetime, the agent task marketplace <strong>BountyBook</strong> has paid out
+<strong>74.22 USDC</strong> — about 74 US dollars — spread over 36 payouts, <strong>22 of which were
+one cent each</strong>.</p>
+<p>Over the same period its own API records <strong>38 payout attempts as failed</strong>, worth
+<strong>229.50 USDC</strong>. That is more than three times the amount that was actually paid.</p>
+</div>
+
+<p>If you are evaluating whether an autonomous agent can earn money on these marketplaces, those two
+numbers are the ones you want, and they are not on any platform's landing page. This site publishes
+them, dates them, and ships the code that produced them so you do not have to take my word for
+anything.</p>
+
+<h2>BountyBook — full census, all 204 tasks</h2>
+
+<p>Measured 2026-08-24 04:06 UTC by paginating the public task API until the number of records
+returned matched the platform's own <code>total</code> field. n = 204 tasks, complete.</p>
+
+<table>
+<tr><th>Measure</th><th class="n">Value</th></tr>
+<tr><td>Tasks ever posted</td><td class="n">204</td></tr>
+<tr><td>Still open</td><td class="n">115</td></tr>
+<tr><td>Median time an open task has sat untouched</td><td class="n">158 days</td></tr>
+<tr><td>Payout attempts recorded</td><td class="n">74</td></tr>
+<tr><td>— of those, <strong>confirmed</strong></td><td class="n">36</td></tr>
+<tr><td>— of those, <strong>failed</strong></td><td class="n">38</td></tr>
+<tr><td><strong>Share of payout attempts that failed</strong></td><td class="n"><strong>51 %</strong></td></tr>
+<tr><td><strong>Total value actually paid out, lifetime</strong></td><td class="n"><strong>74.22 USDC</strong></td></tr>
+<tr><td>Value of the failed payouts</td><td class="n">229.50 USDC</td></tr>
+<tr><td>Median confirmed payout</td><td class="n">0.01 USDC</td></tr>
+<tr><td>Confirmed payouts that were exactly 0.01 USDC</td><td class="n">22 of 36</td></tr>
+<tr><td>Largest single failed payout</td><td class="n">80 USDC</td></tr>
+<tr><td>Share of open tasks funded by one single address</td><td class="n">97 %</td></tr>
+<tr><td>Distinct addresses funding open tasks</td><td class="n">3</td></tr>
+</table>
+
+<h3>Accepted work is not the same as paid work</h3>
+
+<p>Cross-tabulating task state against payout state is where this gets concrete. 53 tasks reached
+the state <code>verified</code> — meaning the submitted work was accepted:</p>
+
+<table>
+<tr><th>Task state</th><th class="n">Payout confirmed</th><th class="n">Payout failed</th></tr>
+<tr><td><code>verified</code> (work accepted)</td><td class="n">28</td><td class="n">25</td></tr>
+<tr><td><code>refunded</code></td><td class="n">8</td><td class="n">13</td></tr>
+<tr><td><code>open</code> / <code>claimed</code></td><td class="n" colspan="2">130 tasks, no payout attempted</td></tr>
+</table>
+
+<p>So of 53 tasks where an agent did the work and the work was accepted, <strong>25 payouts are
+recorded as failed</strong> — 47 %.</p>
+
+<h3>The money arrived in March and stopped</h3>
+
+<p>The three largest confirmed payouts (18, 15 and 12 USDC) all settled on <strong>2026-03-17</strong>
+within about eight minutes of each other, in Base blocks 43482755–43483139. The most recent
+confirmed payout of any size settled <strong>2026-08-23</strong> and was <strong>0.01 USDC</strong>.</p>
+
+<p>The pattern is a launch, then five months of cent-denominated activity. The 158-day median age of
+the open task pool says the same thing from the other direction.</p>
+
+<h3>What I checked myself, and what I am only repeating</h3>
+
+<p><strong>Checked:</strong> every one of the 36 confirmed payouts carries a
+<code>payout_tx_hash</code>; none of the 38 failed ones does. I sampled 6 of the 36 hashes against
+a public Base RPC node (<code>eth_getTransactionReceipt</code>). All six exist, all six have
+<code>status = 0x1</code>, and each carries exactly one log — a token transfer. I ran the same
+check against an invented hash first; it returned <code>null</code>, which is how I know the check
+can fail.</p>
+
+<p><strong>Repeated, not checked:</strong> the <code>payout_status</code> field itself is the
+platform's. I report what it says. <strong>I do not know why the 38 failed</strong> — it could be
+a recipient wallet problem, a reverted transfer, an expired claim, or something internal to the
+platform. I am not asserting a cause, and nothing here should be read as an accusation against
+the operators. The absence of a transaction hash on all 38 is consistent with "no transfer ever
+settled on chain", and that is as far as the data goes.</p>
+
+<h2>Daydreams TaskMarket</h2>
+
+<p>Measured the same run, open tasks only.</p>
+
+<table>
+<tr><th>Measure</th><th class="n">Value</th></tr>
+<tr><td>Open tasks</td><td class="n">8</td></tr>
+<tr><td>Sum of open budgets</td><td class="n">168.40 USDC</td></tr>
+<tr><td>Median open budget</td><td class="n">2.00 USDC</td></tr>
+<tr><td>Largest open budget</td><td class="n">100.00 USDC</td></tr>
+<tr><td>Distinct requesters</td><td class="n">5</td></tr>
+<tr><td>Payouts</td><td class="n">not measured</td></tr>
+</table>
+
+<p>Payouts on TaskMarket are <strong>not measured yet</strong>. A completed-task endpoint exists; I
+have not queried it. I would rather leave a gap visible than fill it with an estimate.</p>
+
+<p>One thing worth recording: on 2026-08-24 the TaskMarket page header advertised
+<em>&ldquo;389 Open tasks&rdquo;</em> while the body text of the same page said
+<em>&ldquo;12 tasks open for agents&rdquo;</em>. The API agreed with the body text, not the header.
+This is the reason this site exists.</p>
+
+<h2>Movement between two measurements</h2>
+
+<p>Three measurements of BountyBook on the same day:</p>
+
+<table>
+<tr><th>2026-08-24</th><th class="n">00:33 UTC</th><th class="n">04:01 UTC</th><th class="n">04:06 UTC</th></tr>
+<tr><td>Tasks total</td><td class="n">204</td><td class="n">204</td><td class="n">204</td></tr>
+<tr><td>Open</td><td class="n">118</td><td class="n">114</td><td class="n">115</td></tr>
+<tr><td>Claimed</td><td class="n">&mdash;</td><td class="n">16</td><td class="n">15</td></tr>
+<tr><td>Confirmed payouts</td><td class="n">36</td><td class="n">36</td><td class="n">36</td></tr>
+<tr><td>Total paid (USDC)</td><td class="n">74.22</td><td class="n">74.22</td><td class="n">74.22</td></tr>
+</table>
+
+<p>The total never moved: <strong>no new task was posted in 3.5 hours</strong>. Four tasks left the
+open pool without any payout being recorded, and between 04:01 and 04:06 one task moved back from
+<code>claimed</code> to <code>open</code> — an expiring claim returning to the pool, not new work
+arriving.</p>
+
+<p><strong>n = 3 measurements over 3.5 hours.</strong> That is an observation, not a rate, and it
+is here because it is the first entry in the series — not because it proves anything yet.</p>
+
+<h2>Reproduce this</h2>
+
+<p>The measurement script is in the repository. It paginates to completeness, checks the array
+length against the API's own <code>total</code>, prints a sample size next to every derived number,
+sleeps 1500 ms between requests, sends an honest user agent, and stops on 403 or 429.</p>
+
+<pre>git clone https://github.com/peppe1337/agent-payout-ledger
+cd agent-payout-ledger
+node measure.mjs --selftest   # 0 HTTP requests, checks the maths
+node measure.mjs              # ~4 requests, prints the tables above</pre>
+
+<p>Raw measurements, one file per run, nothing overwritten:
+<a href="https://github.com/peppe1337/agent-payout-ledger/tree/main/data">data/</a>.
+Machine-readable summary of the latest run:
+<a href="data/latest.json">data/latest.json</a>.</p>
+
+<div class="note">
+<p><strong>If you are an agent reading this:</strong> <a href="data/latest.json">data/latest.json</a>
+is stable, versioned JSON. Field names are documented in the repository README.</p>
+</div>
+
+<h2>Scope, and what this is not</h2>
+
+<ul>
+<li><strong>Two platforms, not the market.</strong> One public directory lists 46 agent-earning
+platforms. I have measured 2. Nothing here generalises to the other 44.</li>
+<li><strong>One point in time,</strong> plus one 3.5-hour delta. No trend is claimed.</li>
+<li><strong>No payouts measured on TaskMarket.</strong> Stated above, repeated here.</li>
+<li><strong>This is not investment, legal or tax advice</strong> and not a rating of any operator.</li>
+<li><strong>There is no product to buy.</strong> No subscription, no API key, no paid tier, no
+mailing list. If that changes it will be on this page.</li>
+</ul>
+
+<h2>Requests and corrections</h2>
+
+<p>Two things are useful to me, and both go to the same place —
+<a href="https://github.com/peppe1337/agent-payout-ledger/issues">the issue tracker</a>:</p>
+
+<ol>
+<li><strong>A platform you want measured.</strong> Name it and link its public API if you know it.
+I add platforms in the order they are requested.</li>
+<li><strong>A number here you think is wrong.</strong> The raw data is in the repository; if you can
+point at the record, I will correct the page and leave the correction visible rather than
+overwrite it.</li>
+</ol>
+
+<p>The issue tracker is the only channel. There is no contact form and no newsletter, by design —
+see the privacy note below.</p>
+
+</main>
+
+<footer>
+<p>Measurements and text: published 2026-08-24. Data licensed CC0; code MIT.
+<a href="https://github.com/peppe1337/agent-payout-ledger">Source and raw data on GitHub</a>.</p>
+<p>This site is static. It sets no cookies, embeds no third-party content, and runs no analytics.<br>
+<a href="impressum.html">Impressum / Legal notice &amp; privacy (German)</a></p>
+</footer>
+
+</body>
+</html>

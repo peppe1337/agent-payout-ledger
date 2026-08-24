@@ -1,0 +1,32 @@
+{
+  "measuredAt": "2026-08-24T04:06:15.045Z",
+  "platforms": {
+    "bountybook": {
+      "source": "https://api.bountybook.ai/jobs",
+      "complete": true,
+      "totalTasksPerApi": 204,
+      "tasksLoaded": 204,
+      "openTasks": 115,
+      "openBudgetSumUsdc": 536.01,
+      "confirmedPayouts": {
+        "count": 36,
+        "sumUsdc": 74.22
+      },
+      "distinctFunders": 3,
+      "largestFunderShare": 0.9739130434782609,
+      "medianOpenAgeDays": 157.83812549768518
+    },
+    "taskmarket": {
+      "source": "https://api.taskmarket.dev/api/tasks",
+      "complete": true,
+      "totalTasksPerApi": null,
+      "tasksLoaded": 8,
+      "openTasks": 8,
+      "openBudgetSumUsdc": 168.398,
+      "confirmedPayouts": null,
+      "distinctFunders": 5,
+      "largestFunderShare": 0.375,
+      "medianOpenAgeDays": 0.24370998842592592
+    }
+  }
+}
