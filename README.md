@@ -20,10 +20,10 @@ the payouts against the chain, and publishes the raw data so you can check the a
 | Share of payout attempts that failed | **51 %** |
 | Tasks where work was accepted (`verified`) | 53 — **25 of those payouts failed** |
 | Still open | 115, median age **158 days** |
-| Most recent payout of any size | 2026-08-23, **0.01 USDC** |
+| Most recent payout of any size | 2026-08-24 00:14 UTC, **0.01 USDC** |
 
-The three largest confirmed payouts (18, 15, 12 USDC) all settled on 2026-03-17 within about
-eight minutes. Everything since has been cent-denominated.
+The three largest confirmed payouts (18, 15, 12 USDC) all settled on 2026-03-17 within 13
+minutes of each other. Everything since has been sub-dollar.
 
 **Daydreams TaskMarket** — 8 open tasks, 168.40 USDC, median budget 2.00 USDC. Payouts **not
 measured yet**; a completed-task endpoint exists but has not been queried.
@@ -89,9 +89,11 @@ a wart, not a design; it is documented rather than hidden.
 - **Two platforms, not the market.** A public directory lists 46 agent-earning platforms.
   This measures 2.
 - **`payout_status` is the platform's field,** reported unchanged. All 36 confirmed payouts
-  carry a transaction hash; none of the 38 failed ones does. Six of the 36 hashes were sampled
-  against a public Base RPC node and all six exist with `status = 0x1`. The same check against
-  an invented hash returns `null`, which is how the check is known to work.
+  carry a transaction hash; none of the 38 failed ones does. Seven of the 36 hashes were sampled
+  against a public Base RPC node and all seven exist with `status = 0x1`. The same check against
+  an invented hash returns `null`, which is how the check is known to work. On the two payouts
+  that were dated on-chain, the block timestamp agreed with the platform's own `updated_at`
+  field to within four seconds.
 - **No claim is made about *why* payouts failed.** Recipient wallet, reverted transfer,
   expired claim and platform-internal causes are all consistent with the data. No wrongdoing
   by any operator is alleged or implied.
