@@ -25,8 +25,12 @@ the payouts against the chain, and publishes the raw data so you can check the a
 The three largest confirmed payouts (18, 15, 12 USDC) all settled on 2026-03-17 within 13
 minutes of each other. Everything since has been sub-dollar.
 
-**Daydreams TaskMarket** — 8 open tasks, 168.40 USDC, median budget 2.00 USDC. Payouts **not
-measured yet**; a completed-task endpoint exists but has not been queried.
+**Daydreams TaskMarket** — full census of all 242 tasks. 174 completed, 881.10 USDC paid to
+workers (per-task net reward). Payouts are **measured against the chain**, not against the API:
+the platform publishes no payout hash, so `vaultcheck.mjs` reads USDC transfer logs directly
+from the Base vault (`0xddc6cc3e4d11c1f3527b867c7dad4ed9869c33f7`). Key finding: 47 tasks
+sit in `awaiting_settlement` with no award and an `expiryTime` in the past, holding 388.18 USDC
+— 48.8 % of the vault balance.
 
 ## Reproduce it
 
@@ -51,9 +55,12 @@ purpose makes it exit non-zero.
 | Path | Contents |
 |---|---|
 | `index.html` | The published report |
-| `measure.mjs` | The measurement script |
+| `measure.mjs` | The measurement script (BountyBook, paginated API) |
+| `vaultcheck.mjs` | TaskMarket vault measurement — reads USDC transfer logs on Base |
 | `data/latest.json` | Machine-readable summary of the most recent run (**English field names**) |
 | `data/*.json` | One file per measurement run, timestamped, never overwritten |
+| `data/vault/*.json` | One file per `vaultcheck.mjs` run |
+| `data/taskmarket-zensus-*.json` | TaskMarket task census, one file per run |
 
 ### `data/latest.json` field reference
 

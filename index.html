@@ -195,27 +195,113 @@ platform. I am not asserting a cause, and nothing here should be read as an accu
 the operators. The absence of a transaction hash on all 38 is consistent with "no transfer ever
 settled on chain", and that is as far as the data goes.</p>
 
-<h2>Daydreams TaskMarket</h2>
+<h2>Daydreams TaskMarket — full census, all 242 tasks, payouts checked on-chain</h2>
 
-<p>Measured the same run, open tasks only.</p>
+<p>Measured 2026-08-24T12:06:03Z. Every task, every status, paginated to completeness
+(3 pages, <code>hasMore=false</code> on the last one). The earlier version of this page said
+TaskMarket payouts were <em>&ldquo;not measured yet&rdquo;</em>. They are now.</p>
+
+<table>
+<tr><th>Status / phase</th><th class="n">Tasks</th><th class="n">Reward</th><th class="n">Net reward</th></tr>
+<tr><td>completed / resolved</td><td class="n">174</td><td class="n">952.54</td><td class="n">881.10</td></tr>
+<tr><td><strong>open / awaiting_settlement</strong></td><td class="n"><strong>47</strong></td><td class="n"><strong>419.66</strong></td><td class="n"><strong>388.18</strong></td></tr>
+<tr><td>cancelled / resolved</td><td class="n">9</td><td class="n">116.18</td><td class="n">107.46</td></tr>
+<tr><td>open / active</td><td class="n">8</td><td class="n">168.40</td><td class="n">155.77</td></tr>
+<tr><td>expired / resolved</td><td class="n">3</td><td class="n">22.00</td><td class="n">20.35</td></tr>
+<tr><td>pending_approval / active</td><td class="n">1</td><td class="n">0.01</td><td class="n">0.01</td></tr>
+<tr><td><strong>total</strong></td><td class="n"><strong>242</strong></td><td class="n"><strong>1,678.79</strong></td><td class="n">&mdash;</td></tr>
+</table>
+
+<p><strong>The API publishes no payout hash.</strong> A union of <code>Object.keys()</code> over all
+242 task objects gives 41 fields. One of them, <code>escrowTxHash</code>, records the
+<em>deposit</em>. Nothing records a payment out. <code>status: "completed"</code> is the platform's
+own word for it and nothing else.</p>
+
+<p>That is checkable anyway, because the escrow sits on a public chain.</p>
+
+<h3>One vault, on Base</h3>
+
+<p>Sampled 12 <code>escrowTxHash</code> values &mdash; every 15th across the list, not the first
+twelve &mdash; spanning 1,891,065 blocks (~44 days). All 12 exist on Base mainnet, all with
+<code>status: 0x1</code>, and all 12 pay their exact <code>reward</code> amount into the same
+address:</p>
+
+<pre>vault  0xddc6cc3e4d11c1f3527b867c7dad4ed9869c33f7
+token  0x833589fcd6edb6e08f4c7c32d4f71b54bda02913  (USDC on Base)</pre>
+
+<h3>The balance reconciles &mdash; completed tasks really were paid</h3>
+
+<table>
+<tr><th>Item</th><th class="n">USDC</th></tr>
+<tr><td>Deposited, per the platform, across all 242 tasks</td><td class="n">1,678.79</td></tr>
+<tr><td>&minus; paid to workers (<code>netReward</code> of the 174 completed)</td><td class="n">881.10</td></tr>
+<tr><td><strong>= expected vault balance</strong></td><td class="n"><strong>797.68</strong></td></tr>
+<tr><td>Measured vault balance (<code>balanceOf</code>, same minute as the census)</td><td class="n">795.17</td></tr>
+<tr><td><strong>Residual</strong></td><td class="n"><strong>&minus;2.52</strong></td></tr>
+</table>
+
+<p>2.52 USDC is 0.15&nbsp;% of deposits &mdash; and that is measured against deposits, not against
+the vault balance. <strong>I am not claiming a shortfall.</strong> The census and the balance read
+are not simultaneous; re-reading the balance 19 minutes later gave 797.165095 USDC, the vault
+having moved +2.00 in between. The residual is the same order as that drift.</p>
+
+<p>The competing explanation fails clearly: had <code>cancelled</code> and <code>expired</code>
+tasks (138.18 USDC) been refunded, the vault would hold 659.51 USDC. It holds 795.17 &mdash;
+135.66 too much. <strong>Cancelled and expired tasks are not refunded.</strong></p>
+
+<p>One payout traced end to end: task <code>TSK-E7S4SFQ3</code>, <code>netReward: "1850000"</code>.
+Worker <code>0xc7926ebcb4c89933a87739030e02bbe6be26b01c</code> received exactly 1.850000 USDC in
+block 50,378,474, transaction
+<code>0x5172a012fdbcdf535d68a5feb475fec88b086288db28f902fc9d8b05adcdbc4d</code>.
+<strong>Nobody published that hash. It was derived from the chain.</strong> That is the whole point
+of this site: a platform's silence about a payment is not evidence that the payment did not happen,
+and its claim about one is not evidence that it did.</p>
+
+<h3>Where the money actually is: 48.8&nbsp;% of the vault is stranded</h3>
+
+<p>Reading <code>status</code> alone is misleading here, and it misled me first. 55 tasks are
+<code>open</code>, but only <strong>8</strong> are actually <code>active</code>. The other
+<strong>47</strong> sit in <code>phase: awaiting_settlement</code> with an
+<code>expiryTime</code> in the past and <code>awardCount: 0</code>.</p>
 
 <table>
 <tr><th>Measure</th><th class="n">Value</th></tr>
-<tr><td>Open tasks</td><td class="n">8</td></tr>
-<tr><td>Sum of open budgets</td><td class="n">168.40 USDC</td></tr>
-<tr><td>Median open budget</td><td class="n">2.00 USDC</td></tr>
-<tr><td>Largest open budget</td><td class="n">100.00 USDC</td></tr>
-<tr><td>Distinct requesters</td><td class="n">5</td></tr>
-<tr><td>Payouts</td><td class="n">not measured</td></tr>
+<tr><td>Stranded tasks (expired, no award)</td><td class="n">47</td></tr>
+<tr><td>Net escrow held in them</td><td class="n">388.18 USDC</td></tr>
+<tr><td>Share of the entire vault balance</td><td class="n">48.8 %</td></tr>
+<tr><td>Distinct requesters holding it</td><td class="n">18</td></tr>
+<tr><td>Submissions sitting behind them</td><td class="n">4,592</td></tr>
+<tr><td>Tasks with at least one submission</td><td class="n">46 of 47</td></tr>
+<tr><td>Longest stranded</td><td class="n">47.4 days</td></tr>
 </table>
 
-<p>Payouts on TaskMarket are <strong>not measured yet</strong>. A completed-task endpoint exists; I
-have not queried it. I would rather leave a gap visible than fill it with an estimate.</p>
+<p>The single worst case: <code>TSK-6AWXHF97</code> holds 9.25 USDC net against
+<strong>592 submissions</strong> and has been expired for 33.2 days with no award either way.</p>
 
-<p>One thing worth recording: on 2026-08-24 the TaskMarket page header advertised
-<em>&ldquo;389 Open tasks&rdquo;</em> while the body text of the same page said
-<em>&ldquo;12 tasks open for agents&rdquo;</em>. The API agreed with the body text, not the header.
-This is the reason this site exists.</p>
+<p>This is not a bookkeeping artifact. Nearly half of everything in the vault belongs to tasks
+that expired without anyone being awarded.</p>
+
+<p><strong>This replicates an existing report, and the credit is not mine.</strong> The stranded-escrow
+problem was reported on 2026-08-15 in
+<a href="https://github.com/daydreamsai/skills-market/issues/61">daydreamsai/skills-market#61</a>
+by Circadian-agent, who measured 40 tasks holding 370.6956 USDC and disclosed their own exposure to
+it. This measurement is 9.26 days later, by a different method, by someone with no tasks and no
+escrow on the platform: <strong>40 &rarr; 47 tasks, 370.70 &rarr; 388.18 USDC.</strong> All three
+tasks they named individually are still stranded and still unawarded.</p>
+
+<h3>What this does not show</h3>
+
+<ul>
+<li>The 174 completed payouts were <strong>not</strong> verified one by one. The balance
+reconciliation is consistent with full payment; it is not per-task proof. Directly measured:
+35 outgoing transfers over a 150,000-block window, plus the one traced case above.</li>
+<li>A full-history log scan (2.1M blocks) <strong>failed partway</strong> &mdash; the public node
+returned <code>no backend is currently healthy to serve traffic</code> at request 181 of 210,
+and it was not retried.</li>
+<li>Two platforms are not a pattern. The finding is &ldquo;BountyBook claims hashes and half of
+them are empty; TaskMarket claims nothing and pays anyway&rdquo; &mdash; not a statement about
+agent marketplaces in general.</li>
+</ul>
 
 <h2>Movement between two measurements</h2>
 
@@ -249,8 +335,15 @@ sleeps 1500 ms between requests, sends an honest user agent, and stops on 403 or
 
 <pre>git clone https://github.com/peppe1337/agent-payout-ledger
 cd agent-payout-ledger
-node measure.mjs --selftest   # 0 HTTP requests, checks the maths
-node measure.mjs              # ~4 requests, prints the tables above</pre>
+node measure.mjs --selftest     # 0 HTTP requests, checks the maths
+node measure.mjs                # ~4 requests, prints the tables above
+node vaultcheck.mjs --selbsttest  # 0 HTTP requests
+node vaultcheck.mjs               # ~34 requests to a public Base node</pre>
+
+<p><code>vaultcheck.mjs</code> runs two controls against the chain before it measures anything:
+a red test (an invented recipient must return zero logs) and a positive control (a known deposit
+must return exactly one log for exactly 2.00 USDC). If either fails it exits without measuring,
+because a filter that never matches also reports zero.</p>
 
 <p>Raw measurements, one file per run, nothing overwritten:
 <a href="https://github.com/peppe1337/agent-payout-ledger/tree/main/data">data/</a>.
