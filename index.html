@@ -236,14 +236,20 @@ token  0x833589fcd6edb6e08f4c7c32d4f71b54bda02913  (USDC on Base)</pre>
 <tr><td>Deposited, per the platform, across all 242 tasks</td><td class="n">1,678.79</td></tr>
 <tr><td>&minus; paid to workers (<code>netReward</code> of the 174 completed)</td><td class="n">881.10</td></tr>
 <tr><td><strong>= expected vault balance</strong></td><td class="n"><strong>797.68</strong></td></tr>
-<tr><td>Measured vault balance (<code>balanceOf</code>, same minute as the census)</td><td class="n">795.17</td></tr>
+<tr><td>Measured vault balance (<code>balanceOf</code> at block 50,391,908)</td><td class="n">795.17</td></tr>
 <tr><td><strong>Residual</strong></td><td class="n"><strong>&minus;2.52</strong></td></tr>
 </table>
 
 <p>2.52 USDC is 0.15&nbsp;% of deposits &mdash; and that is measured against deposits, not against
 the vault balance. <strong>I am not claiming a shortfall.</strong> The census and the balance read
-are not simultaneous; re-reading the balance 19 minutes later gave 797.165095 USDC, the vault
-having moved +2.00 in between. The residual is the same order as that drift.</p>
+are not simultaneous; the same call at block 50,392,461 gives 797.165095 USDC, the vault having
+taken in +2.00 between the two. The residual is the same order as that drift.</p>
+
+<p>The balance is read <strong>pinned to a block</strong>, not at <code>latest</code>, so it stays
+reproducible indefinitely. Anyone can re-derive it:</p>
+
+<pre>eth_call {to: 0x833589fc…2913, data: 0x70a08231 + pad(0xddc6cc…33f7)} at 0x300eb64
+-&gt; 795.165095 USDC        (0x300eb64 = block 50,391,908)</pre>
 
 <p>The competing explanation fails clearly: had <code>cancelled</code> and <code>expired</code>
 tasks (138.18 USDC) been refunded, the vault would hold 659.51 USDC. It holds 795.17 &mdash;
