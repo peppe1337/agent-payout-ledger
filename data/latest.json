@@ -23,10 +23,12 @@
       "tasksLoaded": 8,
       "openTasks": 8,
       "openBudgetSumUsdc": 168.398,
-      "confirmedPayouts": null,
+      "confirmedPayouts": "measured on-chain, not via this API — see censusFile and data/vault/",
       "distinctFunders": 5,
       "largestFunderShare": 0.375,
-      "medianOpenAgeDays": 0.24370998842592592
+      "medianOpenAgeDays": 0.24370998842592592,
+      "scope": "open tasks only; see censusFile for the full-status census and on-chain payouts",
+      "censusFile": "data/taskmarket-zensus-2026-08-24T12-06-03Z.json"
     }
   }
 }

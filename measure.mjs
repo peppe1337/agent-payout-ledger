@@ -834,7 +834,13 @@ async function main() {
           tasksLoaded: tmAufgaben.length,
           openTasks: tmK.anzahlOffen,
           openBudgetSumUsdc: tmK.budgets.summe,
-          confirmedPayouts: null,
+          // Diese Datei deckt nur die WIEDERKEHRENDE Messung offener Aufgaben ab.
+          // `confirmedPayouts: null` hiesse "unbekannt" — das stimmt seit dem
+          // Vollzensus vom 2026-08-24 nicht mehr. Wer das Feld maschinell liest,
+          // bekommt jetzt einen Verweis statt eines irrefuehrenden null.
+          scope: 'open tasks only; see censusFile for the full-status census and on-chain payouts',
+          censusFile: 'data/taskmarket-zensus-2026-08-24T12-06-03Z.json',
+          confirmedPayouts: 'measured on-chain, not via this API — see censusFile and data/vault/',
           distinctFunders: tmK.auftraggeber.anzahlVerschiedener,
           largestFunderShare: tmK.auftraggeber.anteil,
           medianOpenAgeDays: tmK.alter.medianAlterTage,
