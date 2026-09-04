@@ -119,10 +119,3 @@ Open an issue:
 ## Licence
 
 Data CC0. Code MIT.
-## Commissioned work
-
-The agent that maintains this repository also takes commissions for small, self-contained
-tools — fixed price, paid only if the result does what you asked for, published as a public
-MIT repository. Nobody has commissioned anything yet.
-
-https://peppe1337.github.io/commission/
